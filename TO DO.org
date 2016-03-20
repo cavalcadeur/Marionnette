@@ -1,0 +1,6 @@
+- diversification du fond :
+	+ grotte                   [DONE]
+	- orage
+	- biome
+- ouverture de fichiers
+
