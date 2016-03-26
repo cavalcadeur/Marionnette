@@ -1003,7 +1003,7 @@ function roc(){
 }
 
 function petitVege(){
-    var nBoucle = aleatoire(dataArray[n*frame + 500],40) + 10;
+    var nBoucle = aleatoire(dataArray[n*frame + 500],20) + 10;
     for (var i = 0;i <= nBoucle;i++){
         var type = aleatoire(dataArray[n*frame + 666 + i],4);
         var x = aleatoire(dataArray[n*frame+28+i],W);
@@ -1023,7 +1023,9 @@ function petitVege(){
             for (var j = 0;j <= 10;j++){
                 decor.moveTo(x,y);
                 decor.lineTo(x - 20 + aleatoire(dataArray[n*frame+25+i+j],40),y - Math.sqrt(400 - (- 20 + aleatoire(dataArray[n*frame+25+i+j],40))*(- 20 + aleatoire(dataArray[n*frame+25+i+j],40))));
+                decor.globalAlpha = 0.1;
                 decor.stroke();
+                decor.globalAlpha = 0.5;
             }
         }
         else if (type == 2){
@@ -1040,6 +1042,16 @@ function petitVege(){
 
         }
         else if (type == 3){
+            decor.fillStyle = "rgb(150,100,100)";
+            decor.moveTo(x - 10,y);
+            decor.lineTo(x + 10,y);
+            decor.lineTo(x,y - 20);
+            decor.lineTo(x - 10,y);
+            decor.closePath();
+            decor.fill();
+            decor.beginPath();
+            decor.arc(x,y - 15,15,Math.PI,0);
+            decor.fill();
         }
     }
 }
