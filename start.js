@@ -655,6 +655,7 @@ function rapace(e,i){
 // FONCTIONS RELATIVES AUX DESSINS DE DECOR ET D'EFFETS VISUELS
 
 function montagne(){
+    decor.globalAlpha = 1;
     for (var j = 50;j >= 0;j -= 10){
         decor.fillStyle = "rgb("+ (100 + j) + "," + (125 + j) +","+ (200 + j * 2) +")";
         if (j % 20 == 0){
@@ -688,6 +689,7 @@ function montagne(){
             decor.fill();
         }
     }
+    decor.globalAlpha = 0.7;
 }
 
 function grotte(){
@@ -737,10 +739,13 @@ function biome(){
     else if (relief == 13) cratere();
     else if (relief == 14) roc();
     else sommet();
+
     decor.globalAlpha = 0.2;
-    var climat = aleatoire(dataArray[n * frame+664],2);
+    var climat = aleatoire(dataArray[n * frame+664],5);
     if (climat == 1) pluie();
-    else if (climat == 2) pluie();
+    else if (climat == 2) neige();
+    else if (climat == 3) brume();
+    else if (climat == 4) bulle();
 }
 
 function pluie(){
@@ -748,12 +753,48 @@ function pluie(){
     var nBoucle = aleatoire(dataArray[n*frame + 500],40) + 50;
     for (var i = 0;i <= nBoucle;i++){
         decor.beginPath();
-        decor.arc(aleatoire(dataArray[n*frame + 82 + i],W),aleatoire(dataArray[n*frame + 88 + i],H),aleatoire(dataArray[n*frame + 14 + i],10) + 3,0,Math.PI);
-        decor.moveTo(aleatoire(dataArray[n*frame + 82 + i],W) - aleatoire(dataArray[n*frame + 14 + i],10) - 3,aleatoire(dataArray[n*frame + 88 + i],H));
-        decor.lineTo(aleatoire(dataArray[n*frame + 82 + i],W),aleatoire(dataArray[n*frame + 88 + i],H) - aleatoire(dataArray[n*frame + 14 + i],10) * 2 -6);
-        decor.lineTo(aleatoire(dataArray[n*frame + 82 + i],W) + aleatoire(dataArray[n*frame + 14 + i],10) + 3,aleatoire(dataArray[n*frame + 88 + i],H));
+        decor.arc(aleatoire(dataArray[n*frame + 82 + i],W),aleatoire(dataArray[n*frame + 88 + i],H - H / 10),aleatoire(dataArray[n*frame + 14 + i],10) + 3,0,Math.PI);
+        decor.moveTo(aleatoire(dataArray[n*frame + 82 + i],W) - aleatoire(dataArray[n*frame + 14 + i],10) - 3,aleatoire(dataArray[n*frame + 88 + i],H - H / 10));
+        decor.lineTo(aleatoire(dataArray[n*frame + 82 + i],W),aleatoire(dataArray[n*frame + 88 + i],H - H / 10) - aleatoire(dataArray[n*frame + 14 + i],10) * 2 -6);
+        decor.lineTo(aleatoire(dataArray[n*frame + 82 + i],W) + aleatoire(dataArray[n*frame + 14 + i],10) + 3,aleatoire(dataArray[n*frame + 88 + i],H - H / 10));
         decor.closePath();
         decor.fill();
+    }
+}
+
+function neige(){
+    decor.strokeStyle = "rgb(255,255,255)";
+    var nBoucle = aleatoire(dataArray[n*frame + 500],40) + 30;
+    var coor = [[0,3],[2,2],[3,0],[2,-2],[0,-3],[-2,-2],[-3,0],[-2,2]];
+    for (var i = 0;i <= nBoucle;i++){
+        var size = aleatoire(dataArray[n*frame + 666 + i],15) + 2;
+        decor.beginPath();
+        coor.forEach( function(e){
+            decor.moveTo(aleatoire(dataArray[n*frame + 18 + i],W),aleatoire(dataArray[n*frame + 42 + i],H - H / 10));
+            decor.lineTo(aleatoire(dataArray[n*frame + 18 + i],W) + e[0] * size,aleatoire(dataArray[n*frame + 42 + i],H - H / 10) + e[1] * size);
+        });
+        decor.closePath();
+        decor.stroke();
+    }
+}
+
+function bulle(){
+    var nBoucle = aleatoire(dataArray[n*frame + 500],40) + 30;
+    var coor = [[0,3],[2,2],[3,0],[2,-2],[0,-3],[-2,-2],[-3,0],[-2,2]];
+    for (var i = 0;i <= nBoucle;i++){
+        decor.strokeStyle = "rgb(0,0,0)";
+        decor.beginPath();
+        decor.arc(aleatoire(dataArray[n*frame + 82 + i],W),aleatoire(dataArray[n*frame + 88 + i],H - H / 10),aleatoire(dataArray[n*frame + 14 + i],15) + 5,-Math.PI,Math.PI);
+        decor.closePath();
+        decor.stroke();
+    }
+}
+
+function brume(){
+    decor.fillStyle = "rgb(150,150,150)";
+    decor.globalAlpha = 0.04;
+    for (var i = 0;i <= 20;i++){
+        decor.fillRect(0,i * H / 20,W,H);
     }
 }
 
