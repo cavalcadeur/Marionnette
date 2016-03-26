@@ -162,6 +162,7 @@ function draw() {
         imgRapace.src = "images/r" + aleatoire(dataArray[n*frame+1],nRapace - 1) + ".png";
         decor.fillStyle = fond;
         decor.fillRect(0, 0, W, H);
+        decor.globalAlpha = 0.7;
         objCiel.forEach(
             function(c) {
                 decor.drawImage(c.img,c.x,c.y);
@@ -172,7 +173,7 @@ function draw() {
         else biome();
     }
     else if (firstTime == n){
-        fond = "rgb(" + aleatoire(dataArray[n*frame],180) + "," + aleatoire(dataArray[n*frame+59],200) + "," + aleatoire(dataArray[n*frame+90],200) + ")";
+        fond = "rgb(" + aleatoire(dataArray[n*frame],150) + "," + aleatoire(dataArray[n*frame+59],180) + "," + aleatoire(dataArray[n*frame+90],200) + ")";
         for(var i = 0;i < 5;i++){
             objCiel.push({"img":imgCiel[aleatoire(dataArray[n*frame+i*10],nCiel-1)],"x":aleatoire(dataArray[n*frame+i*10 + 109],W),"y":aleatoire(dataArray[n*frame+i*10 + 80],H/3)});
         }
@@ -718,9 +719,10 @@ function biome(){
     var couleurs = ["rgb(250,200,90)","rgb(100,100,50)","rgb(200,200,180)","rgb(60,60,60)","rgb(200,200,255)","rgb(10,10,11)","rgb(149,150,0)","rgb(150,150,150)","rgb(235,235,235)"];
     var couleur = couleurs[aleatoire(dataArray[n * frame+664],couleurs.length - 1)];
     console.log(couleur);
-    var relief = aleatoire(dataArray[n * frame+664],9);
-//    var relief = 6;
+    var relief = aleatoire(dataArray[n * frame+664],14);
+//    var relief = 12;
     decor.fillStyle = couleur;
+    decor.globalAlpha = 0.5;
     if (relief == 0) plat();
     else if (relief == 1) sommet();
     else if (relief == 2) vallee();
@@ -730,6 +732,59 @@ function biome(){
     else if (relief == 7) falaise();
     else if (relief == 8) devers();
     else if (relief == 9) pointe();
+    else if (relief == 10) morcele();
+    else if (relief == 12) double();
+    else if (relief == 13) cratere();
+    else if (relief == 14) roc();
+    else sommet();
+    decor.globalAlpha = 0.2;
+    var climat = aleatoire(dataArray[n * frame+664],2);
+    if (climat == 1) pluie();
+    else if (climat == 2) pluie();
+}
+
+function pluie(){
+    decor.fillStyle = "rgb(10,10,100)";
+    var nBoucle = aleatoire(dataArray[n*frame + 500],40) + 50;
+    for (var i = 0;i <= nBoucle;i++){
+        decor.beginPath();
+        decor.arc(aleatoire(dataArray[n*frame + 82 + i],W),aleatoire(dataArray[n*frame + 88 + i],H),aleatoire(dataArray[n*frame + 14 + i],10) + 3,0,Math.PI);
+        decor.moveTo(aleatoire(dataArray[n*frame + 82 + i],W) - aleatoire(dataArray[n*frame + 14 + i],10) - 3,aleatoire(dataArray[n*frame + 88 + i],H));
+        decor.lineTo(aleatoire(dataArray[n*frame + 82 + i],W),aleatoire(dataArray[n*frame + 88 + i],H) - aleatoire(dataArray[n*frame + 14 + i],10) * 2 -6);
+        decor.lineTo(aleatoire(dataArray[n*frame + 82 + i],W) + aleatoire(dataArray[n*frame + 14 + i],10) + 3,aleatoire(dataArray[n*frame + 88 + i],H));
+        decor.closePath();
+        decor.fill();
+    }
+}
+
+function double(){
+    var relief = aleatoire(dataArray[n * frame+674],14);
+    if (relief == 0) plat();
+    else if (relief == 1) sommet();
+    else if (relief == 2) vallee();
+    else if (relief == 3) ecorche();
+    else if (relief == 4) colline();
+    else if (relief == 6) troue();
+    else if (relief == 7) falaise();
+    else if (relief == 8) devers();
+    else if (relief == 9) pointe();
+    else if (relief == 10) morcele();
+    else if (relief == 13) cratere();
+    else if (relief == 14) roc();
+    else sommet();
+    relief = aleatoire(dataArray[n * frame+274],14);
+    if (relief == 0) plat();
+    else if (relief == 1) sommet();
+    else if (relief == 2) vallee();
+    else if (relief == 3) ecorche();
+    else if (relief == 4) colline();
+    else if (relief == 6) troue();
+    else if (relief == 7) falaise();
+    else if (relief == 8) devers();
+    else if (relief == 9) pointe();
+    else if (relief == 10) morcele();
+    else if (relief == 13) cratere();
+    else if (relief == 14) roc();
     else sommet();
 }
 
@@ -865,5 +920,40 @@ function troue(){
         decor.arc(aleatoire(dataArray[n*frame + 82 + i],W),aleatoire(dataArray[n*frame + 83 + i],H),aleatoire(dataArray[n*frame + 83 + i],150),-Math.PI,Math.PI);
         decor.closePath();
         decor.fill();
+    }
+}
+
+function morcele(){
+    decor.fillRect(0,H - H / 10,W,H / 10);
+    var nBoucle = aleatoire(dataArray[n*frame + 500],5) + 2;
+    for (var i = 0;i <= nBoucle;i++){
+        decor.beginPath();
+        decor.arc(aleatoire(dataArray[n*frame + 82 + i],W),aleatoire(dataArray[n*frame + 83 + i],H),aleatoire(dataArray[n*frame + 83 + i],150),0,-Math.PI);
+        decor.closePath();
+        decor.fill();
+    }
+}
+
+function cratere(){
+    decor.fillRect(0,H - H / 10,W,H / 10);
+    var nBoucle = aleatoire(dataArray[n*frame + 500],3) + 2;
+    for (var i = 0;i <= nBoucle;i++){
+        decor.beginPath();
+        decor.moveTo(aleatoire(dataArray[n*frame + 28 + i],W),H-H/10);
+        decor.lineTo(aleatoire(dataArray[n*frame + 28+i],W)+aleatoire(dataArray[n*frame + 47 + i],50) + 50,H/2 - aleatoire(dataArray[n*frame + 11 + i],100));
+        decor.lineTo(aleatoire(dataArray[n*frame+28+i],W)+aleatoire(dataArray[n*frame+47+i],100)+100,H/2 - aleatoire(dataArray[n*frame + 11 + i],50) + 20);
+        decor.lineTo(aleatoire(dataArray[n*frame+28+i],W)+aleatoire(dataArray[n*frame+47+i],100)+200,H/2 - aleatoire(dataArray[n*frame + 11 + i],50) + 20);
+        decor.lineTo(aleatoire(dataArray[n*frame+28+i],W)+aleatoire(dataArray[n*frame+47+i],300)+200,H/2 - aleatoire(dataArray[n*frame + 11 + i],100));
+        decor.lineTo(aleatoire(dataArray[n*frame+28+i],W)+aleatoire(dataArray[n*frame+47+i],400)+300,H-H/10);
+        decor.closePath();
+        decor.fill();
+    }
+}
+
+function roc(){
+    decor.fillRect(0,H - H / 10,W,H / 10);
+    var nBoucle = aleatoire(dataArray[n*frame + 500],13) + 9;
+    for (var i = 0;i <= nBoucle;i++){
+        decor.fillRect(aleatoire(dataArray[n*frame+28+i],W),aleatoire(dataArray[n*frame+77+i],H),aleatoire(dataArray[n*frame+98+i],300),aleatoire(dataArray[n*frame+29+i],300));
     }
 }
