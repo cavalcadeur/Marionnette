@@ -739,7 +739,10 @@ function biome(){
     else if (relief == 13) cratere();
     else if (relief == 14) roc();
     else sommet();
-
+    decor.globalAlpha = 0.5;
+    var vegetation = aleatoire(dataArray[n * frame+664],2);
+    if (vegetation == 0) petitVege();
+    else petitVege();
     decor.globalAlpha = 0.2;
     var climat = aleatoire(dataArray[n * frame+664],5);
     if (climat == 1) pluie();
@@ -996,5 +999,44 @@ function roc(){
     var nBoucle = aleatoire(dataArray[n*frame + 500],13) + 9;
     for (var i = 0;i <= nBoucle;i++){
         decor.fillRect(aleatoire(dataArray[n*frame+28+i],W),aleatoire(dataArray[n*frame+77+i],H),aleatoire(dataArray[n*frame+98+i],300),aleatoire(dataArray[n*frame+29+i],300));
+    }
+}
+
+function petitVege(){
+    var nBoucle = aleatoire(dataArray[n*frame + 500],60) + 10;
+    for (var i = 0;i <= nBoucle;i++){
+        var type = aleatoire(dataArray[n*frame + 666 + i],4);
+        var x = aleatoire(dataArray[n*frame+28+i],W);
+        var y = -aleatoire(dataArray[n*frame+2008+i],H / 10) + H;
+        decor.beginPath();
+        if (type == 0){
+            decor.fillStyle = "rgb(25,182,0)";
+            for (var j = 0;j <= 3;j++){
+                decor.moveTo(x,y);
+                decor.lineTo(x + 10,y);
+                decor.lineTo(x - 15 + aleatoire(dataArray[n*frame+25+i+j],30),y - Math.sqrt(400 - (- 15 + aleatoire(dataArray[n*frame+25+i+j],30))*(- 20 + aleatoire(dataArray[n*frame+25+i+j],40))));
+                decor.lineTo(x,y);
+                decor.fill();
+            }
+        }
+        else if (type == 1){
+            for (var j = 0;j <= 10;j++){
+                decor.moveTo(x,y);
+                decor.lineTo(x - 20 + aleatoire(dataArray[n*frame+25+i+j],40),y - Math.sqrt(400 - (- 20 + aleatoire(dataArray[n*frame+25+i+j],40))*(- 20 + aleatoire(dataArray[n*frame+25+i+j],40))));
+                decor.stroke();
+            }
+        }
+        else if (type == 2){
+            decor.strokeStyle = "rgb(20,0,50)";
+            decor.fillStyle = "rgb(30,40,0)";
+            decor.fillRect(x - 10,y - 80,20,80);
+            for (var j = 0;j <= 25;j++){
+                decor.moveTo(x,y - 80);
+                decor.lineTo(x - 100 + aleatoire(dataArray[n*frame+25+i+j],200),y - 80 - Math.sqrt(8000 - (- 100 + aleatoire(dataArray[n*frame+25+i+j],200))*(- 20 + aleatoire(dataArray[n*frame+25+i+j],40))));
+                decor.stroke();
+            }
+            decor.strokeStyle = "rgb(0,0,0)";
+
+        }
     }
 }
