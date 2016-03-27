@@ -173,7 +173,7 @@ function draw() {
         else biome();
     }
     else if (firstTime == n){
-        fond = "rgb(" + aleatoire(dataArray[n*frame],150) + "," + aleatoire(dataArray[n*frame+59],180) + "," + aleatoire(dataArray[n*frame+90],200) + ")";
+        fond = "rgb(" + aleatoire(dataArray[n*frame],70) + "," + aleatoire(dataArray[n*frame+59],180) + "," + aleatoire(dataArray[n*frame+90],200) + ")";
         for(var i = 0;i < 5;i++){
             objCiel.push({"img":imgCiel[aleatoire(dataArray[n*frame+i*10],nCiel-1)],"x":aleatoire(dataArray[n*frame+i*10 + 109],W),"y":aleatoire(dataArray[n*frame+i*10 + 80],H/3)});
         }
@@ -1002,7 +1002,7 @@ function roc(){
 }
 
 function petitVege(){
-    var baseType = aleatoire(dataArray[n*frame + 660],2) * 10;;
+    var baseType = aleatoire(dataArray[n*frame + 660],3) * 10;;
     var nBoucle = aleatoire(dataArray[n*frame + 500],20) + 10;
     for (var i = 0;i <= nBoucle;i++){
         var type = baseType + aleatoire(dataArray[n*frame + 666 + i],4);
@@ -1056,7 +1056,7 @@ function petitVege(){
             decor.arc(x,y - 15,15,Math.PI,0);
             decor.fill();
         }
-        else if (type == 13){
+        else if (type == 13 | type == 34){
             // fleur simple
             decor.fillStyle = "rgb(25,182,0)";
             for (var j = 0;j <= 3;j++){
@@ -1073,7 +1073,6 @@ function petitVege(){
             decor.stroke();
             decor.beginPath();
             decor.arc(x+5,y - 25,5,Math.PI,-Math.PI);
-            //decor.stroke();
             decor.fill();
         }
         else if (type == 23){
@@ -1088,6 +1087,18 @@ function petitVege(){
             decor.beginPath();
             decor.arc(x + 7,y - 7,10,-Math.PI/3,2*Math.PI/3);
             decor.fill();
+        }
+        else if (type == 30 | type == 31 | type == 32| type == 33){
+            decor.fillStyle = "rgb(50,150,0)";
+            for (var j = 0;j <= 3;j++){
+                // feuilles
+                decor.moveTo(x,y);
+                decor.lineTo(x - 30 + aleatoire(dataArray[n*frame+25+i+j],60)+3,y - Math.sqrt(900 - (- 30 + aleatoire(dataArray[n*frame+25+i+j],60)+3)*(- 30 + aleatoire(dataArray[n*frame+25+i+j],60)-3)));
+                decor.lineTo(x - 40 + aleatoire(dataArray[n*frame+25+i+j],80),y - Math.sqrt(1600 - (- 40 + aleatoire(dataArray[n*frame+25+i+j],80))*(- 40 + aleatoire(dataArray[n*frame+25+i+j],80))));
+                decor.lineTo(x - 30 + aleatoire(dataArray[n*frame+25+i+j],40)-3,y - Math.sqrt(900 - (- 30 + aleatoire(dataArray[n*frame+25+i+j],60)-3)*(- 30 + aleatoire(dataArray[n*frame+25+i+j],60)-3)));
+                decor.closePath();
+                decor.fill();
+            }
         }
     }
 }
