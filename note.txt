@@ -2,3 +2,4 @@
 						 ecorche
 						 falaise
 						 troue
+- bof bof : cratere

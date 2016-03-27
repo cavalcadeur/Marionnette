@@ -2,5 +2,6 @@
 	+ grotte                   [DONE]
 	- orage
 	- biome
-- ouverture de fichiers
++ ouverture de fichiers        [DONE]
+- correction ecorché
 

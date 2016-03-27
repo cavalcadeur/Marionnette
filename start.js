@@ -67,14 +67,14 @@ function aleatoire(n,max){
 
 function getData() {
     source = audioCtx.createBufferSource();
-//    var request = new XMLHttpRequest();
+    //    var request = new XMLHttpRequest();
 
-//    request.open('GET', 'musiques/D.mp3', true);
+    //    request.open('GET', 'musiques/D.mp3', true);
 
-//    request.responseType = 'arraybuffer';
+    //    request.responseType = 'arraybuffer';
 
     var input = document.getElementById("input");
-    
+
     input.addEventListener('change', function(evt) {
         canvas.style.display = "block";
         canvasFond.style.display = "block";
@@ -82,7 +82,7 @@ function getData() {
         var file = files[0];
         var reader = new FileReader();
         reader.readAsArrayBuffer(file);
-    
+
         reader.onload = function() {
             console.log(reader);
             var audioData = reader.result;
@@ -98,9 +98,9 @@ function getData() {
                                      function(e){console.log("Error with decoding audio data" + e.err);});
 
         };
-    }); 
+    });
 
-//        request.send();
+    //        request.send();
 }
 
 function start(){
@@ -136,11 +136,11 @@ function start(){
         imgExpr.push(new Image);
         imgExpr[i-1].src = "images/e" + i + ".png";
     }
-   for (var i = 1;i <= nObj; i++){
+    for (var i = 1;i <= nObj; i++){
         imgObj.push(new Image);
         imgObj[i-1].src = "images/o" + i + ".png";
     }
-   for (var i = 1;i <= nDanger; i++){
+    for (var i = 1;i <= nDanger; i++){
         imgDanger.push(new Image);
         imgDanger[i-1].src = "images/d" + i + ".png";
     }
@@ -168,7 +168,7 @@ function draw() {
                 decor.drawImage(c.img,c.x,c.y);
             }
         );
-	if (aleatoire(dataArray[n*frame],20) == 2) grotte();
+        if (aleatoire(dataArray[n*frame],20) == 2) grotte();
         else if (aleatoire(dataArray[n*frame],20) == 1) montagne();
         else biome();
     }
@@ -592,8 +592,8 @@ function shiver(e,i){
 function quest(e,i){
     ctx.drawImage(imgQuest,0,H - 300);
     if (e.n == 100){
-//        objPerso[0].x = 50;
-//        objPerso[0].y = H - 500;
+        //        objPerso[0].x = 50;
+        //        objPerso[0].y = H - 500;
         objPerso[0].action = "rapace";
         objPerso[0].n = 100;
     }
@@ -623,14 +623,14 @@ function quest(e,i){
 }
 
 function rapace(e,i){
-//    else if (e.n > 100){
-        // A revoir car cela ne marche pas du tout !!!
-//        e.y += (H - 200 - e.goal) / 100;
-//    }
+    //    else if (e.n > 100){
+    // A revoir car cela ne marche pas du tout !!!
+    //        e.y += (H - 200 - e.goal) / 100;
+    //    }
     if (e.n == 100){
         e.r = 0;
         e.scale = 0.6;
-        e.y = H - 200;        
+        e.y = H - 200;
     }
     else if (e.n > 0){
         ctx.drawImage(imgRapace,e.x,(H - 300) / 100 * (100 - e.n));
@@ -695,19 +695,19 @@ function montagne(){
 function grotte(){
     for (var j = 30;j >= 0;j -= 10){
         decor.fillStyle = "rgb("+ (100 + j) + "," + (100 + j) +","+ (50 + j) +")";
-            var mx = -j;
-            var my = H / 17 + j;
-            decor.beginPath();
-            decor.moveTo(mx,my);
-            for (var i = firstTime;i < firstTime + 51;i++){
-                if (i % 2 == 0) {my += stalag(i+j,40);mx += W / 50;}
-                else {my -= stalag(i+j-1,40);mx += W / 50;}
-                decor.lineTo(mx,my);
-            }
-            decor.lineTo(W,0);
-            decor.lineTo(0,0);
-            decor.closePath();
-            decor.fill();
+        var mx = -j;
+        var my = H / 17 + j;
+        decor.beginPath();
+        decor.moveTo(mx,my);
+        for (var i = firstTime;i < firstTime + 51;i++){
+            if (i % 2 == 0) {my += stalag(i+j,40);mx += W / 50;}
+            else {my -= stalag(i+j-1,40);mx += W / 50;}
+            decor.lineTo(mx,my);
+        }
+        decor.lineTo(W,0);
+        decor.lineTo(0,0);
+        decor.closePath();
+        decor.fill();
     }
 }
 
@@ -722,7 +722,7 @@ function biome(){
     var couleur = couleurs[aleatoire(dataArray[n * frame+664],couleurs.length - 1)];
     console.log(couleur);
     var relief = aleatoire(dataArray[n * frame+664],14);
-//    var relief = 12;
+    //    var relief = 12;
     decor.fillStyle = couleur;
     decor.globalAlpha = 0.5;
     if (relief == 0) plat();
@@ -740,9 +740,8 @@ function biome(){
     else if (relief == 14) roc();
     else sommet();
     decor.globalAlpha = 0.5;
-    var vegetation = aleatoire(dataArray[n * frame+664],2);
+    var vegetation = aleatoire(dataArray[n * frame+664],1);
     if (vegetation == 0) petitVege();
-    else petitVege();
     decor.globalAlpha = 0.2;
     var climat = aleatoire(dataArray[n * frame+664],5);
     if (climat == 1) pluie();
@@ -873,7 +872,7 @@ function vallee(){
     decor.lineTo(W - W / 3 - aleatoire(dataArray[n*frame + 40],100),H - H / 10);
     decor.lineTo(W,H - H / 10);
     decor.closePath();
-    decor.fill();    
+    decor.fill();
 }
 
 function ecorche(){
@@ -953,7 +952,7 @@ function devers(){
     decor.lineTo(W - W / 4 - aleatoire(dataArray[n*frame + 47],100),H-H/10);
     decor.lineTo(W,H-H/10);
     decor.closePath();
-    decor.fill();    
+    decor.fill();
 }
 
 function troue(){
@@ -1003,13 +1002,15 @@ function roc(){
 }
 
 function petitVege(){
+    var baseType = aleatoire(dataArray[n*frame + 660],2) * 10;;
     var nBoucle = aleatoire(dataArray[n*frame + 500],20) + 10;
     for (var i = 0;i <= nBoucle;i++){
-        var type = aleatoire(dataArray[n*frame + 666 + i],4);
+        var type = baseType + aleatoire(dataArray[n*frame + 666 + i],4);
         var x = aleatoire(dataArray[n*frame+28+i],W);
         var y = -aleatoire(dataArray[n*frame+2008+i],H / 10) + H;
         decor.beginPath();
         if (type == 0){
+            // touffe d'herbes
             decor.fillStyle = "rgb(25,182,0)";
             for (var j = 0;j <= 3;j++){
                 decor.moveTo(x,y);
@@ -1019,8 +1020,9 @@ function petitVege(){
                 decor.fill();
             }
         }
-        else if (type == 1){
+        else if (type == 1 | type == 11 | type == 12){
             for (var j = 0;j <= 10;j++){
+                // herbes seches noires
                 decor.moveTo(x,y);
                 decor.lineTo(x - 20 + aleatoire(dataArray[n*frame+25+i+j],40),y - Math.sqrt(400 - (- 20 + aleatoire(dataArray[n*frame+25+i+j],40))*(- 20 + aleatoire(dataArray[n*frame+25+i+j],40))));
                 decor.globalAlpha = 0.1;
@@ -1028,7 +1030,8 @@ function petitVege(){
                 decor.globalAlpha = 0.5;
             }
         }
-        else if (type == 2){
+        else if (type == 2 | type == 21 | type == 22){
+            // sapin bleu
             decor.fillStyle = "rgb(30,40,0)";
             decor.fillRect(x - 10,y - 80,20,80);
             decor.fillStyle = "rgb(100,100,150)";
@@ -1037,11 +1040,11 @@ function petitVege(){
                 decor.lineTo(x + 50,y - 70 - j * 30);
                 decor.lineTo(x,y - 70 - j * 30 - 60);
                 decor.lineTo(x - 50,y - 70 - j * 30);
-                decor.fill();
             }
-
+            decor.fill();
         }
-        else if (type == 3){
+        else if (type == 3 | type == 20){
+            // champignon
             decor.fillStyle = "rgb(150,100,100)";
             decor.moveTo(x - 10,y);
             decor.lineTo(x + 10,y);
@@ -1051,6 +1054,39 @@ function petitVege(){
             decor.fill();
             decor.beginPath();
             decor.arc(x,y - 15,15,Math.PI,0);
+            decor.fill();
+        }
+        else if (type == 13){
+            // fleur simple
+            decor.fillStyle = "rgb(25,182,0)";
+            for (var j = 0;j <= 3;j++){
+                decor.moveTo(x,y);
+                decor.lineTo(x + 10,y);
+                decor.lineTo(x - 15 + aleatoire(dataArray[n*frame+25+i+j],30),y - Math.sqrt(400 - (- 15 + aleatoire(dataArray[n*frame+25+i+j],30))*(- 20 + aleatoire(dataArray[n*frame+25+i+j],40))));
+                decor.lineTo(x,y);
+                decor.fill();
+            }
+            decor.beginPath();
+            decor.fillStyle = "rgb(100,100,20)";
+            decor.moveTo(x+5,y);
+            decor.lineTo(x+5,y - 20);
+            decor.stroke();
+            decor.beginPath();
+            decor.arc(x+5,y - 25,5,Math.PI,-Math.PI);
+            //decor.stroke();
+            decor.fill();
+        }
+        else if (type == 23){
+            // coeur jaune
+            decor.fillStyle = "rgb(150,150,0)";
+            decor.arc(x,y,10,-Math.PI,0);
+            decor.fill();
+            decor.beginPath();
+            decor.fillStyle = "rgb(100,0,0)";
+            decor.arc(x - 7,y - 7,10,Math.PI/3,-2*Math.PI/3);
+            decor.fill();
+            decor.beginPath();
+            decor.arc(x + 7,y - 7,10,-Math.PI/3,2*Math.PI/3);
             decor.fill();
         }
     }
