@@ -9,20 +9,22 @@ var imgHalo = new Image();
 imgHalo.src = "images/halo.png";
 var imgQuest = new Image();
 imgQuest.src = "images/q1.png";
+var imgFumee = new Image();
+imgFumee.src = "images/fumee.png";
 var buffer,dataArray,bufferGo;
 var firstTime = 90100;
 var minDecible = 0;
-var maxDecible = 10;
+var maxDecible = 11;
 var a,b;
 var nCiel = 7;
 var imgCiel = [];
 var objCiel = [];
-var nPerso = 18;
+var nPerso = 19;
 var imgPerso = [];
 var objPerso = [];
 var nThink = 9;
 var imgObj = [];
-var nObj = 5;
+var nObj = 6;
 var nRapace = 6;
 var imgRapace = new Image();
 var imgDanger = [];
@@ -33,13 +35,20 @@ var nGrumph = 6;
 var imgGrumph = [];
 var nExpr = 6;
 var imgExpr = [];
+var imgBarre = new Image();
+imgBarre.src = "images/barre.png";
 var time;
 var n = 90099;
 var frame;
-var actions = ["move","wait","hide","jump","thinking","ET","superJump","move","wait","wait","wait","move","wait","rotate","change","shout","move","wait","wait","wait","thinking","thinking","monologue"];
-var comps = ["normal","stupide","peureux","colérique","mou","hysterique"];
+var actions = ["move","wait","hide","jump","thinking","ET","superJump","move","wait","wait","wait","move","wait","rotate","change","shout","move","wait","wait","wait","thinking","thinking","monologue","constuire","teleportation","craft","don","artifice"];
+
+var actionsH = ["move","wait","hide","jump","thinking","ET","superJump","move","wait","wait","wait","move","wait","rotate","change","shout","move","wait","wait","wait","thinking","thinking","monologue","meteores","metempsychose"];
+
+var comps = ["normal","stupide","peureux","colérique","mou","hysterique","builder"];
 var n2 = 100;
+var quest;
 var heros = {};
+var questData;
 
 //donnee
 
@@ -47,9 +56,6 @@ var fond;
 
 // programme
 
-function rnd(max){
-    return Math.floor(Math.floor(Math.random()*max));
-}
 
 function resize(){
     W = window.innerWidth;
@@ -179,20 +185,31 @@ function draw() {
         }
     }
     else if (firstTime + 50 == n){
-        for(var i = 0;i < aleatoire(dataArray[n*frame],3) + 2;i++){
-            objPerso.push({"img":imgPerso[aleatoire(dataArray[n*frame+i*10],nPerso-1)],"x":aleatoire(dataArray[n*frame+i*10 + 109],W/2-100)*2,"y":H - 200,"goal":aleatoire(dataArray[n*frame+i*10 + 88],W/2)*2,"action":"choix","n":100,"pensee":imgThink[aleatoire(dataArray[n*frame+i],nThink-1)],"r":0,"scale":0.6,"comportement":comps[aleatoire(dataArray[n*frame+i*10 + 88],comps.length-1)],"expr":imgExpr[aleatoire(dataArray[n*frame+i],nExpr - 1)]});
+        quest = "";
+        for(var i = 0;i < aleatoire(dataArray[n*frame],2) + 2;i++){
+            objPerso.push({"img":imgPerso[aleatoire(dataArray[n*frame+i*10],nPerso-1)],"x":aleatoire(dataArray[n*frame+i*10 + 109],W/2-100)*2,"y":H - 200,"goal":aleatoire(dataArray[n*frame+i*10 + 88],W/2)*2,"action":"choix","n":100,"n2":0,"n3":[],"pensee":imgThink[aleatoire(dataArray[n*frame+i],nThink-1)],"r":0,"obj":"","ox":0,"oy":0,"scale":0.6,"comportement":comps[aleatoire(dataArray[n*frame+i*10 + 88],comps.length-1)],"expr":imgExpr[aleatoire(dataArray[n*frame+i],nExpr - 1)],"alpha":1});
         }
-        objPerso.push({"img":imgPerso[aleatoire(dataArray[n*frame+9],nPerso-1)],"x":aleatoire(dataArray[n*frame+9 + 109],W/2-100)*2,"y":H - 200,"goal":aleatoire(dataArray[n*frame+9 + 88],W/2)*2,"action":"choix","n":100,"n2":0,"pensee":imgThink[aleatoire(dataArray[n*frame+9],nThink-1)],"r":0,"scale":1,"comportement":"heros","expr":imgExpr[aleatoire(dataArray[n*frame+1],nExpr - 1)],"obj":imgObj[aleatoire(dataArray[n*frame+1],nObj - 1)],"danger":imgDanger[aleatoire(dataArray[n*frame+11],nDanger - 1)]});
+        objPerso.push({"img":imgPerso[aleatoire(dataArray[n*frame+9],nPerso-1)],"x":aleatoire(dataArray[n*frame+9 + 109],W/2-100)*2,"y":H - 200,"goal":aleatoire(dataArray[n*frame+9 + 88],W/2)*2,"action":"choix","n":100,"n2":0,"n3":[],"pensee":imgThink[aleatoire(dataArray[n*frame+9],nThink-1)],"r":0,"scale":1,"comportement":"heros","expr":imgExpr[aleatoire(dataArray[n*frame+1],nExpr - 1)],"obj":imgObj[aleatoire(dataArray[n*frame+1],nObj - 1)],"danger":imgDanger[aleatoire(dataArray[n*frame+11],nDanger - 1)],"alpha":1});
     }
 
     else if (firstTime + 61 <= n){
         ctx.clearRect(0,0,W,H);
+        if (quest != "") drawQuest();
         objPerso.forEach(
             function(c,index) {
                 if (c.comportement == "colérique"){
-                    if (c.action == "hide" | c.action == "ET") c.action = "shout";
-                    else if (c.action == "rotate") c.action = "superJump";
-                    else if (c.action == "change") c.action = "shout";
+                    if (c.action == "hide" | c.action == "ET") {
+                        if (quest == "metempsychose") c.action = "superMove";
+                        else c.action = "shout";
+                    }
+                    else if (c.action == "rotate")  {
+                        if (quest == "metempsychose") c.action = "superMove";
+                        else c.action = "superJump";
+                    }
+                    else if (c.action == "change") {
+                        if (quest == "metempsychose") c.action = "superMove";
+                        else c.action = "shout";
+                    }
                     else if (c.action == "move" | c.action == "run" | c.action == "fall") c.action = "jump";
                 }
                 else if (c.comportement == "stupide"){
@@ -200,7 +217,10 @@ function draw() {
                     else if (c.action == "change") c.action = "rotate";
                     else if (c.action == "shout" | c.action == "superJump") c.action = "thinking";
                 }
-                else if (c.comportement == "peureux" && c.action != "hide" && c.action != "rapace" && c.action != "superFall"){
+                else if (c.comportement == "builder"){
+                    if (c.action == "hide" || c.action == "wait" || c.action == "ET") c.action = "constuire";
+                }
+                else if (c.comportement == "peureux" && c.action != "hide" && c.action != "rapace" && c.action != "superFall" && c.action != "stasis"){
                     var moyenne = 0;
                     var nMoyenne = 0;
                     objPerso.forEach(
@@ -217,20 +237,34 @@ function draw() {
                     if (Math.abs(moyenne - c.x) < 100) {c.action = "hide";c.n = 100;c.scale = 0.6;c.rotate = 0;}
                     else if (moyenne > c.x) c.goal = 0;
                     else c.goal = W - 200;
-                    if (c.action == "move") c.action = "run";
-                    else if (c.action == "wait"| c.action == "superjump" | c.action == "rotate" | c.action == "ET") c.action = "run";
-                    else if (c.action == "change") c.action = "shiver";
+                    if (c.action == "move") {
+                        if (quest == "metempsychose") c.action = "move";
+                        else c.action = "run";
+                    }
+                    else if (c.action == "wait"| c.action == "superJump" | c.action == "rotate" | c.action == "ET") c.action = "run";
+                    else if (c.action == "change")  {
+                        if (quest == "metempsychose") c.action = "jump";
+                        else c.action = "shiver";
+                    }
                 }
                 else if (c.comportement == "heros"){
                     c.scale = 1;
                     if (c.action == "hide") c.action = "thinking";
                     else if (c.action == "ET") c.action = "objet";
                     else if (c.action == "change") c.action = "objet";
-                    else if (c.action == "rotate") c.action = "danger";
-                    else if (c.action == "jump") c.action = "quest";
+                    else if (c.action == "rotate") {
+                        if (quest == "metempsychose") c.action = "move";
+                        else c.action = "danger";
+                    }
+                    else if (c.action == "jump" && quest != "metempsychose") c.action = "quest";
                     else if (c.action == "fall") c.action = "choix";
 
                 }
+                if (c.obj != ""){
+                    c.ox = c.x;
+                    c.oy = c.y;
+                }
+                if (quest == "metempsychose" && c.action == "superJump") c.action = "jump";
                 if (c.action == "choix") choix(c,index);
                 else if (c.action == "move") move(c,index);
                 else if (c.action == "wait") wait(c,index);
@@ -252,8 +286,19 @@ function draw() {
                 else if (c.action == "objet" && c.n > 50) objet(c,index);
                 else if (c.action == "throw") throwing(c,index);
                 else if (c.action == "danger") danger(c,index);
-                else if (c.action == "quest") quest(c,index);
+                else if (c.action == "quest") questH(c,index);
                 else if (c.action == "rapace") rapace(c,index);
+                else if (c.action == "meteores") meteores(c,index);
+                else if (c.action == "constuire") build(c,index);
+                else if (c.action == "stasis") wait(c,index);
+                else if (c.action == "teleportation") teleport(c,index);
+                else if (c.action == "metempsychose") quete(c,index,"metempsychose");
+                else if (c.action == "superMove") move(c,index);
+                else if (c.action == "craft") craft(c,index);
+                else if (c.action == "don") don(c,index);
+                else if (c.action == "artifice") fireWork(c,index);
+                else if (c.action == "victory") victory(c,index);
+                ctx.globalAlpha = c.alpha;
                 ctx.save();
                 ctx.translate(c.x + 100,c.y + 100);
                 if (c.comportement == "heros") ctx.scale(c.scale,1);
@@ -262,8 +307,12 @@ function draw() {
                 ctx.drawImage(c.img,-100,-100);
                 ctx.restore();
                 if (c.action == "objet" && c.n <= 50) objet(c,index);
+                if (c.obj != "" && c.comportement != "heros"){
+                    ctx.drawImage(c.obj,c.ox+75,c.oy+110,50,50);
+                }
+                ctx.globalAlpha = 1;
             }
-        );
+        );        
     }
 }
 
@@ -273,7 +322,9 @@ function draw() {
 // n est une variable toujours remise à 100 après utilisation
 
 function choix(e,i){
+    e.alpha = 1;
     e.n = 100;
+    //    e.n2 = 0;
     if (e.comportement == "stupide"){
         e.n = 100;
         e.y -= e.n / 10;
@@ -286,24 +337,30 @@ function choix(e,i){
         e.n = 100;
     }
     e.action = actions[aleatoire(dataArray[n*frame+i*10 + 88],actions.length-1)];
+    if (e.comportement == "heros") e.action = actionsH[aleatoire(dataArray[n*frame+i*10 + 88],actionsH.length-1)];
     if (i == 0 && (e.action == "ET" | e.action == "hide")) e.action = "choix";
+    if (e.action == "artifice") e.n2 = 0;
 }
 
 function move(e,i){
     if (e.comportement == "mou"){
-        if (e.x > e.goal) e.x -= 1;
-        else if (e.x < e.goal) e.x += 1;
+        var vit = 1;
     }
     else if (e.comportement == "hysterique"){
-        if (e.x > e.goal) e.x -= 3;
-        else if (e.x < e.goal) e.x += 3;
+        var vit = 3;
     }
     else {
-        if (e.x > e.goal) e.x -= 2;
-        else if (e.x < e.goal) e.x += 2;
+        var vit = 2;
+    }
+    if (e.x > e.goal) e.x -= vit;
+    else if (e.x < e.goal) e.x += vit;
+    if (e.obj != ""){
+        if (e.x > e.goal) e.ox = e.x + vit;
+        else if (e.x < e.goal) e.ox = e.x - vit;
     }
     if (Math.abs(e.x - e.goal) < 2) {
-        e.goal = aleatoire(dataArray[n*frame + i * 10],W/2-100)*2;
+        if (quest == "metempsychose") e.goal = (aleatoire(dataArray[n*frame + i * 10],250)+Math.round(questData[0]/2))*2;
+        else e.goal = aleatoire(dataArray[n*frame + i * 10],W/2-100)*2;
         e.action = "choix";
         e.n = 100;
     }
@@ -323,21 +380,30 @@ function run(e,i){
         else if (e.x < e.goal) e.x += 6;
     }
     if (Math.abs(e.x - e.goal) < 10) {
-        e.goal = aleatoire(dataArray[n*frame + i * 10],W/2-100)*2;
+        if (quest == "metempsychose") e.goal = (aleatoire(dataArray[n*frame + i * 10],250)+Math.round(questData[0]/2))*2;
+        else e.goal = aleatoire(dataArray[n*frame + i * 10],W/2-100)*2;
         e.action = "hide";
         e.n = 100;
     }
 }
 
 function wait(e,i){
-    e.n -= aleatoire(dataArray[n*frame + i * 11],5);
-    if (e.comportement == "hysterique") e.n -= 3;
-    if (e.comportement == "colérique"){
-        ctx.drawImage(imgGrumph[Math.floor(n / 3) % nGrumph],e.x,e.y - 150);
+    if (e.action == "stasis"){
+        e.n -= aleatoire(dataArray[n*frame + i * 11],5);
+        if (e.comportement == "colérique"){
+            ctx.drawImage(imgGrumph[Math.floor(n / 3) % nGrumph],e.x,e.y - 150);
+        }
     }
-    if (e.n < 0){
-        e.n = 100;
-        e.action = "choix";
+    else {
+        e.n -= aleatoire(dataArray[n*frame + i * 11],5);
+        if (e.comportement == "hysterique") e.n -= 3;
+        if (e.comportement == "colérique"){
+            ctx.drawImage(imgGrumph[Math.floor(n / 3) % nGrumph],e.x,e.y - 150);
+        }
+        if (e.n < 0){
+            e.n = 100;
+            e.action = "choix";
+        }
     }
 }
 
@@ -345,16 +411,55 @@ function hide(e,i){
     if (e.comportement == "hysterique"){
         e.n -= 3;
         if (e.n > 1) e.y += 9;
-        else if (e.n == 1) e.x = aleatoire(dataArray[n*frame+i*10 + 13],W/2 - 100)*2;
+        else if (e.n == 1) {
+            if (quest == "metempsychose") e.x = (aleatoire(dataArray[n*frame + i * 10],250)+Math.round(questData[0]/2))*2;
+            else e.x = aleatoire(dataArray[n*frame+i*10 + 13],W/2 - 100)*2;
+        }
         else if (e.n == -98) {e.action = "choix"; e.n = 100;e.y = H - 200;}
         else e.y -= 9;
     }
     else {
         e.n -= 1;
         if (e.n > 0) e.y += 3;
-        else if (e.n == 0) e.x = aleatoire(dataArray[n*frame+i*10 + 13],W/2 - 100)*2;
+        else if (e.n == 0) {
+            if (quest == "metempsychose") e.x = (aleatoire(dataArray[n*frame + i * 10],250)+Math.round(questData[0]/2))*2;
+            else e.x = aleatoire(dataArray[n*frame+i*10 + 13],W/2 - 100)*2;
+        }
         else if (e.n == -100) {e.action = "choix"; e.n = 100;}
         else e.y -= 3;
+    }
+}
+
+function craft(e,i){
+    e.n -= 1;
+    if (e.n == 60){
+        e.n = 100;
+        e.action = "choix";
+        e.obj = imgObj[aleatoire(dataArray[n*frame+i*10],nObj - 1)];
+        e.ox = e.x;
+        e.oy = e.y;
+    }
+}
+
+function don(e,i){
+    if (e.obj == ""){
+        e.n = 100;
+        e.action = "choix";
+    }
+    if (e.n == 100){
+        e.n2 = aleatoire(dataArray[n*frame+i*10],objPerso.length-1);
+        if (e.n2 != i && e.n2 != 0) e.n = 99;
+    }
+    else {
+        if (Math.abs(e.x - objPerso[e.n2].x) < 10){
+            objPerso[e.n2].obj = new Image();
+            objPerso[e.n2].obj.src = e.obj.src;
+            e.obj = "";
+            e.n = 100;
+            e.action = "choix";
+        }
+        else if (e.x < objPerso[e.n2].x) e.x += 2;
+        else if (e.x > objPerso[e.n2].x) e.x -= 2;
     }
 }
 
@@ -378,18 +483,50 @@ function extraterrestre(e,i){
 function jump(e,i){
     if (e.comportement == "mou"){
         e.y -= e.n / 20;
+        if (quest == "metempsychose") e.y -= e.n/20;
         e.n -= 5;
     }
     else if (e.comportement == "hysterique"){
         e.y -= e.n / 5;
+        if (quest == "metempsychose") e.y -= e.n/5;
         e.n -= 20;
     }
     else{
         e.y -= e.n / 10;
+        if (quest == "metempsychose") e.y -= e.n/10;
         e.n -= 10;
     }
     if (e.y >= H - 200) {
         e.n = 100;
+        e.action = "choix";
+    }
+    if (e.n == 0 && quest == "metempsychose"){
+        if (e.x < questData[0] + 500 && e.x > questData[0]){
+            e.y = questData[1] - 160;
+            if (e.comportement == "heros") e.y -= 40;
+            e.n2 = 0;
+            e.n = 100;
+            questData[2] -= 1;
+            if (questData[2] == 0){
+                e.n = 100;
+                e.action = "victory";
+            }
+            else e.action = "stasis";
+        }
+    }
+}
+
+function quete(e,i,wich){
+    if (e.n > 0){
+        e.n -= 3;
+    }
+    else {
+        if (quest == ""){
+            quest = wich;
+            if (quest == "metempsychose"){
+                questData = [aleatoire(dataArray[n*frame+i],W-500)-100,H - 200,objPerso.length];
+            }
+        }
         e.action = "choix";
     }
 }
@@ -422,7 +559,7 @@ function superJump(e,i){
         e.n = 100;
         objPerso.forEach(
             function(c,index) {
-                if (c.action == "choix" | c.action == "move" | c.action == "thinking" | c.action == "wait" | c.action == "change" | c.action == "run") {
+                if (c.action == "choix" | c.action == "move" | c.action == "thinking" | c.action == "wait" | c.action == "change" | c.action == "run" | c.action == "metempsychose") {
                     c.scale = 0.6;
                     c.action = "fall";
                 }
@@ -480,7 +617,7 @@ function monologue(e,i){
     ctx.drawImage(e.pensee,e.x + 50,e.y - 200);
     objPerso.forEach(
         function(c,index) {
-            if (c.action == "choix" | c.action == "move" | c.action == "thinking" | c.action == "wait" | c.action == "change") {
+            if (c.action == "choix" | c.action == "move" | c.action == "thinking" | c.action == "wait" | c.action == "change" | c.action == "metempsychose") {
                 c.scale = 0.6;
                 c.n = 100;
                 c.action = "listen";
@@ -507,7 +644,7 @@ function monologue(e,i){
 
 function rotate(e,i){
     if (e.comportement == "mou"){e.n -= 0.5;e.r += Math.PI / 100;}
-    else if (e.comportement == "hysterique"){e.n -= 2;e.r += Math.PI / 25}
+    else if (e.comportement == "hysterique"){e.n -= 2;e.r += Math.PI / 25;}
     else{
         e.n -= 1;
         e.r += Math.PI / 50;
@@ -518,12 +655,27 @@ function rotate(e,i){
     }
 }
 
+function build(e,i){
+    e.n -= 1;
+    if (e.n > 50) e.scale -= 0.012;
+    else if (e.n == 0) {e.action = "choix"; e.n = 100; e.scale = 0.6; newHouse(e.x+100,e.y+120);}
+    else e.scale += 0.012;
+}
+
 function change(e,i){
     e.n -= 1;
     if (e.n > 0) e.scale -= 0.006;
     else if (e.n == 0) e.img = imgPerso[aleatoire(dataArray[n*frame+i*10],nPerso-1)];
     else if (e.n == -100) {e.action = "choix"; e.n = 100;}
     else e.scale += 0.006;
+}
+
+function teleport(e,i){
+    e.n -= 1;
+    if (e.n > 0) e.alpha -= 0.01;
+    else if (e.n == 0) {e.x = aleatoire(dataArray[n*frame+i*10],W-100); e.ox = e.x;}
+    else if (e.n == -100) {e.action = "choix"; e.n = 100;}
+    else e.alpha += 0.01;
 }
 
 function shout(e,i){
@@ -589,7 +741,7 @@ function shiver(e,i){
     else if (e.n % 4 == 3) e.x -= 3;
 }
 
-function quest(e,i){
+function questH(e,i){
     ctx.drawImage(imgQuest,0,H - 300);
     if (e.n == 100){
         //        objPerso[0].x = 50;
@@ -649,6 +801,128 @@ function rapace(e,i){
     }
 
     e.n -= 1;
+}
+
+function meteores(e,i){
+    objPerso.forEach(
+        function(c,index) {
+            if (c.action == "choix" | c.action == "move" | c.action == "thinking" | c.action == "wait" | c.action == "change" | c.action == "run") {
+                c.scale = 0.6;
+                c.action = "shiver";
+                c.n = 100;
+            }
+        }
+    );
+    if (e.n == 100){
+        e.n2 = n;
+    }
+    else if (e.n == 0){
+        e.n = 101;
+        e.action = "choix";
+    }
+    for (var k = 0;k < 10;k ++){
+        ctx.drawImage(imgCiel[aleatoire(dataArray[(e.n2)*frame+i*10],nCiel-1)],aleatoire(dataArray[e.n2*frame*2+k],W/2)+(100 - e.n)*H/100,-aleatoire(dataArray[e.n2*frame+k],H)+(100 - e.n)*H/50);
+    }
+    e.n -= 1;
+}
+
+function drawQuest(){
+    ctx.globalAlpha = 0.85;
+    ctx.drawImage(imgBarre,questData[0]+100,questData[1]);
+    ctx.globalAlpha = 1;
+}
+
+function victory(e,i){
+    objPerso.forEach(
+        function(f){
+            f.action = "artifice";
+            f.n = 100;
+            questData[2] = 10 + objPerso.length;
+        }
+    );
+}
+
+function fireWork(e,i){
+    console.log(e.n2);
+    if (e.n2 == 0){
+        e.n = 0;
+        e.n2 = 1;
+        e.n3 = [];
+    }
+    if (e.n < 101){
+        e.n += 1;
+        var ay = H - ((H/8*7)/100)*e.n;
+        e.n3.push([e.x+100,ay,0,1]);
+    }
+    else if (e.n < 105){
+        e.n += 1;
+    }
+    else if (e.n == 105){
+        e.n ++;
+        for (var j = 0;j < 50;j++){
+            var randX = -10 + aleatoire(dataArray[n*frame+j*9],20);
+            var randY = -10 + aleatoire(dataArray[n*frame+j*10],20);
+            e.n3[j] = [e.x + 100  + randX,H/8 + randY,0,1,randX,randY];
+        }
+    }
+    else if (e.n == 119){
+        e.n ++;
+        for (var j = 50;j < 100;j++){
+            var randX = -10 + aleatoire(dataArray[n*frame+j*9],20);
+            var randY = -10 + aleatoire(dataArray[n*frame+j*10],20);
+            e.n3[j] = [e.x + 100  + randX,H/8 + randY,0,1,randX,randY];
+        }
+    }
+    else if (e.n == 170){
+        if (quest == "metempsychose" && questData[2] >= 10){
+            questData[2] -= 1;
+            if (questData[2] == 10){
+                objPerso.forEach(
+                    function(f){
+                        f.action = "superFall";
+                        f.n = 100;
+                    }
+                );
+                questData = "";
+                quest = "";
+            }
+        }
+        else {
+            e.n2 = 0;
+            e.n = 100;
+            e.n3 = [];
+            e.action = "choix";
+        }
+    }
+    else{
+        e.n ++;
+    }
+    e.n3.forEach(
+        function (f,w){
+            if (f[3] > 0){
+                ctx.save();
+                ctx.translate(f[0],f[1]);
+                ctx.rotate(f[2]);
+                ctx.globalAlpha = f[3];
+                ctx.drawImage(imgFumee,-25,-25);
+                ctx.restore();
+                var ddd = aleatoire(dataArray[n*frame+w*7],10)/10;
+                if (e.n < 104){
+                    f[0] += ddd - 0.5;
+                    f[1] += ddd;
+                    var di = 20;
+                }
+                else {
+                    f[0] += f[4];
+                    f[1] += f[5];
+                    f[5] += 0.5;
+                    var di = 30;
+                }
+                f[2] += ddd;
+                f[3] -= ddd/di;
+            }
+        }
+    );
 }
 
 
@@ -839,7 +1113,7 @@ function plat(){
 function sommet(){
     decor.fillRect(0,H - H / 10,W,H / 10);
     var repartition = aleatoire(dataArray[n*frame+323],2);
-    var nBoucle = aleatoire(dataArray[n*frame + 500],5) + 2;
+    var nBoucle = aleatoire(dataArray[n*frame + 500],15) + 20;
     if (repartition == 0 | repartition == 2){
         for (var i = 0;i <= nBoucle;i++){
             decor.beginPath();
@@ -1004,7 +1278,7 @@ function roc(){
 
 function petitVege(){
     var baseType = aleatoire(dataArray[n*frame + 660],4) * 10;
-//    var baseType = 40;
+    //    var baseType = 40;
     var nBoucle = aleatoire(dataArray[n*frame + 500],20) + 10;
     for (var i = 0;i <= nBoucle;i++){
         var type = baseType + aleatoire(dataArray[n*frame + 666 + i],4);
@@ -1131,7 +1405,7 @@ function petitVege(){
 
 function eau(){
     decor.fillStyle = "rgb(10,30,140)";
- //   var type = aleatoire(dataArray[n*frame + 666],3);
+    //   var type = aleatoire(dataArray[n*frame + 666],3);
     var type = 0;
     if (type == 0){
         for (var j = 0;j <= 10;j++){
@@ -1151,5 +1425,65 @@ function eau(){
             decor.moveTo(x-10,y);
             decor.fill();
         }
+    }
+}
+
+function newHouse(x,y){
+    decor.globalAlpha = 0.5;
+    var h = aleatoire(dataArray[n*frame+x],3);
+    if (h == 0){
+        decor.fillStyle = "rgb(244,246,161)";
+        decor.beginPath();
+        decor.arc(x,y-25,25,-Math.PI,Math.PI);
+        decor.closePath();
+        decor.fill();
+        decor.fillStyle = "rgb(0,0,0)";
+        decor.beginPath();
+        decor.moveTo(x-15,y-35);
+        decor.lineTo(x+15,y-35);
+        decor.lineTo(x+15,y-25);
+        decor.lineTo(x+5,y-25);
+        decor.lineTo(x+2,y-27);
+        decor.lineTo(x-2,y-27);
+        decor.lineTo(x-5,y-25);
+        decor.lineTo(x-15,y-25);
+        decor.closePath();
+        decor.fill();
+        decor.fillStyle = "rgb(255,255,255)";
+        decor.beginPath();
+        decor.arc(x-9,y-30,2,-Math.PI,Math.PI);
+        decor.closePath();
+        decor.fill();
+        decor.fillStyle = "rgb(255,255,255)";
+        decor.beginPath();
+        decor.arc(x+9,y-30,2,-Math.PI,Math.PI);
+        decor.closePath();
+        decor.fill();
+    }
+    else if (h == 1){
+        decor.fillStyle = "rgb(149,122,89)";
+        decor.fillRect(x-50,y-100,100,50);
+        decor.fillRect(x-7,y-50,14,50);
+        decor.fillStyle = "rgb(124,83,30)";
+        decor.fillRect(x-7,y-85,14,20);
+        decor.beginPath();
+        decor.moveTo(x-15,y-65);
+        decor.lineTo(x+15,y-65);
+        decor.lineTo(x,y-52);
+        decor.closePath();
+        decor.fill();
+    }
+    else if (h == 2){
+        decor.fillStyle = "rgb(119,119,119)";
+        decor.fillRect(x-50,y-50,100,50);
+        decor.fillStyle = "rgb(133,30,70)";
+        decor.beginPath();
+        decor.moveTo(x-75,y-50);
+        decor.lineTo(x,y-100);
+        decor.lineTo(x+75,y-50);
+        decor.closePath();
+        decor.fill();
+        decor.fillStyle = "rgb(96,81,48)";
+        decor.fillRect(x-25,y-25,25,25);
     }
 }

@@ -1,7 +1,6 @@
 - diversification du fond :
 	+ grotte                   [DONE]
-	- orage
-	- biome
+	+ biome                    [DONE]
 + ouverture de fichiers        [DONE]
 - correction ecorché
 
